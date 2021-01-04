@@ -4,7 +4,7 @@ import FormInput from "../Form-Input/Form-Input";
 import CustomButton from "../Custom-Button/Custom-Button";
 import { signInWithGoogle } from "../../Firebase/Firebase.utils";
 
-class SignIn  extends React.Component {
+class SignIn extends React.Component {
     constructor(props){
         super(props);
 
