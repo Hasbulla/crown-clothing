@@ -1,40 +1,33 @@
 import React from "react";
 import './App.css';
-import { Switch, Route } from "react-router-dom";
 
+import { connect } from "react-redux";
 import ShopPage from "./Pages/Shop/Shop";
-import HomePage from './Pages/Homepage/homepage';
-import SignInAndSignOut from './Pages/SignInAndSignOut/SignInAndSignOut';
 import Header from "./Components/Header/header";
+import HomePage from './Pages/Homepage/homepage';
+import { Switch, Route } from "react-router-dom";
+import SignInAndSignOut from './Pages/SignInAndSignOut/SignInAndSignOut';
 import { auth, CreateUserProfileDocument } from "./Firebase/Firebase.utils";
+import { setCurrentUser } from "./Redux/User/User.Action";
 
 
 class App extends React.Component {
-constructor() {
-  super();
-  this.state = {
-    currentUser: null
-  };
-}
-
 unsubscribeFromAuth = null;
 
 componentDidMount() {
+  const {setCurrentUser} = this.props;
   this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-    //this.setState({ currentUser: user });
     CreateUserProfileDocument(userAuth);
     if (userAuth) {
       const userRef = await CreateUserProfileDocument(userAuth);
       userRef.onSnapshot(snapshot => {
-        this.setState({
-          currentUser: {
-            id: snapshot.id,
-            ...snapshot.data()
-          }
+        setCurrentUser({
+          id: snapshot.id,
+          ...snapshot.data()
         });
       });
     }
-    this.setState({ currentUser: userAuth });
+    setCurrentUser(userAuth);
   });
 }
 
@@ -45,7 +38,7 @@ componentWillUnmount() {
   render(){
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route exact path='/shop' component={ShopPage} />
@@ -56,4 +49,8 @@ componentWillUnmount() {
   }
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+})
+
+export default connect(null, mapDispatchToProps)(App);
