@@ -1,4 +1,4 @@
-import react from "react";
+import React from "react";
 import './Cart-Item.scss';
 
 const CartItem = ({item: { imageUrl, price, name, quantity }}) => (
