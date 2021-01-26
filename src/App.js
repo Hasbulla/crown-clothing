@@ -13,12 +13,12 @@ import { selectCurrentUser } from "./Redux/User/User.Selector";
 import SignInAndSignOut from './Pages/SignInAndSignOut/SignInAndSignOut';
 import { auth, CreateUserProfileDocument } from "./Firebase/Firebase.utils";
 
-
 class App extends React.Component {
 unsubscribeFromAuth = null;
 
 componentDidMount() {
-  const {setCurrentUser} = this.props;
+  const { setCurrentUser } = this.props;
+  
   this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
     CreateUserProfileDocument(userAuth);
     if (userAuth) {
